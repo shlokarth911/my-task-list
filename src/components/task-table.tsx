@@ -101,7 +101,7 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
   };
 
   // Column definitions (unchanged)
-  const columns = React.useMemo<ColumnDef<Task, any>[]>(
+  const columns = React.useMemo<ColumnDef<Task, unknown>[]>(
     () => [
       {
         id: "done",

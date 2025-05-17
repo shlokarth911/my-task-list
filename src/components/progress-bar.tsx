@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Progress } from "@/components/ui/progress";
 import { CheckCircle2 } from "lucide-react";
 
 export interface ProgressBarProps {
