@@ -1,4 +1,4 @@
-import TaskTable from "@/components/task-table";
+import { TaskTable } from "@/components/task-table";
 import React from "react";
 
 const page = () => {
