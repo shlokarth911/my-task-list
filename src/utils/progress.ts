@@ -1,4 +1,4 @@
-import { tasks } from "@/data/tasks";
+import { Task } from "@/data/tasks";
 
 export function getCompletionPercent(tasks: Task[]): number {
   if (tasks.length === 0) return 0;
