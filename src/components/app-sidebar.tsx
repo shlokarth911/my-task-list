@@ -1,4 +1,4 @@
-import { Calendar, Home, Settings } from "lucide-react";
+import { Calendar, Home, Settings, Timer, Info } from "lucide-react";
 
 import {
   Sidebar,
@@ -24,7 +24,17 @@ const items = [
     url: "/calender",
     icon: Calendar,
   },
+  {
+    title: "Pomodoro Timer",
+    url: "/timer",
+    icon: Timer,
+  },
 
+  {
+    title: "About",
+    url: "/about",
+    icon: Info,
+  },
   {
     title: "Settings",
     url: "/settings",

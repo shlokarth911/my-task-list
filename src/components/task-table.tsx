@@ -36,8 +36,6 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-
-// 1️⃣ Import Dialog primitives
 import {
   Dialog,
   DialogTrigger,
@@ -54,7 +52,6 @@ export interface TaskTableProps {
 }
 
 export function TaskTable({ tasks, setTasks }: TaskTableProps) {
-  // Table state
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -62,11 +59,7 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
-
-  // 2️⃣ Dialog open state
   const [isDialogOpen, setDialogOpen] = React.useState(false);
-
-  // 3️⃣ New task form state
   const [newTitle, setNewTitle] = React.useState("");
   const [newDue, setNewDue] = React.useState(
     new Date().toISOString().slice(0, 10)
@@ -74,7 +67,6 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
   const [newPriority, setNewPriority] =
     React.useState<Task["priority"]>("medium");
 
-  // 4️⃣ Handlers
   const toggleDone = (id: string, done: boolean) => {
     setTasks((prev) =>
       prev.map((t) =>
@@ -93,7 +85,6 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
       status: "todo",
     };
     setTasks((prev) => [newTask, ...prev]);
-    // reset form & close dialog
     setNewTitle("");
     setNewDue(new Date().toISOString().slice(0, 10));
     setNewPriority("medium");
@@ -104,7 +95,6 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
     setTasks((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // Column definitions (unchanged)
   const columns = React.useMemo<ColumnDef<Task, unknown>[]>(
     () => [
       {
@@ -125,7 +115,9 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
       {
         accessorKey: "title",
         header: "Task",
-        cell: ({ row }) => row.getValue<string>("title"),
+        cell: ({ row }) => (
+          <span className="break-words">{row.getValue<string>("title")}</span>
+        ),
       },
       {
         accessorKey: "status",
@@ -167,7 +159,6 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="p-1">
-                <span className="sr-only">Actions</span>
                 <MoreHorizontal size={16} />
               </Button>
             </DropdownMenuTrigger>
@@ -193,11 +184,9 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
     [setTasks]
   );
 
-  // Table instance
   const table = useReactTable({
     data: tasks,
     columns,
-    enableRowSelection: true,
     state: { sorting, columnFilters, columnVisibility, rowSelection },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -211,21 +200,20 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
 
   return (
     <div className="w-full">
-      {/* Filter + Add via Dialog */}
-      <div className="flex items-center gap-2 py-4">
+      {/* Responsive filter/add section */}
+      <div className="flex flex-col sm:flex-row gap-2 py-4 space-y-2 sm:space-y-0">
         <Input
           placeholder="Filter tasks..."
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(e) =>
             table.getColumn("title")?.setFilterValue(e.target.value)
           }
-          className="max-w-sm"
+          className="w-full sm:max-w-sm"
         />
 
-        {/* 5️⃣ Dialog Trigger */}
         <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button>Add Task</Button>
+            <Button className="w-full sm:w-auto">Add Task</Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
@@ -234,7 +222,6 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
                 Fill in the details below to add a new task.
               </DialogDescription>
             </DialogHeader>
-            {/* Form Fields */}
             <div className="space-y-4 py-2">
               <div>
                 <label className="block text-sm font-medium mb-1">Title</label>
@@ -242,7 +229,6 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   placeholder="Enter task title"
-                  className="w-full"
                 />
               </div>
               <div>
@@ -253,7 +239,6 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
                   type="date"
                   value={newDue}
                   onChange={(e) => setNewDue(e.target.value)}
-                  className="w-full"
                 />
               </div>
               <div>
@@ -265,7 +250,7 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
                   onChange={(e) =>
                     setNewPriority(e.target.value as Task["priority"])
                   }
-                  className="w-full border rounded px-2 py-1"
+                  className="w-full border rounded px-3 py-2"
                 >
                   <option value="high">High</option>
                   <option value="medium">Medium</option>
@@ -283,20 +268,18 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
         </Dialog>
       </div>
 
-      {/* Table */}
-      <div className="rounded-md border">
-        <Table>
+      {/* Responsive table container */}
+      <div className="rounded-md border overflow-x-auto">
+        <Table className="min-w-[700px] lg:min-w-full">
           <TableHeader>
             {table.getHeaderGroups().map((hg) => (
               <TableRow key={hg.id}>
                 {hg.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                  <TableHead key={header.id} className="whitespace-nowrap">
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -310,7 +293,10 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
                   data-state={row.getIsSelected() ? "selected" : undefined}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      className="py-2 text-lg px-4 lg:py-4 lg:px-6"
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

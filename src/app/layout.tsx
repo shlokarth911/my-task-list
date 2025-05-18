@@ -24,6 +24,7 @@ export default function RootLayout({
       <head>
         <title>Progress Pad</title>
         <meta name="description" content="A progess tracker" />
+        <link rel="icon" href={"/favicon.svg"} />
       </head>
 
       <body
