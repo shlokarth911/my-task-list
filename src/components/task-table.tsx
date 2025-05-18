@@ -100,6 +100,10 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
     setDialogOpen(false);
   };
 
+  const handleDeleteTask = (id: string) => {
+    setTasks((prev) => prev.filter((t) => t.id !== id));
+  };
+
   // Column definitions (unchanged)
   const columns = React.useMemo<ColumnDef<Task, unknown>[]>(
     () => [
@@ -177,11 +181,7 @@ export function TaskTable({ tasks, setTasks }: TaskTableProps) {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={() =>
-                  setTasks((prev) =>
-                    prev.filter((t) => t.id !== row.original.id)
-                  )
-                }
+                onClick={() => handleDeleteTask(row.original.id)}
               >
                 Delete
               </DropdownMenuItem>
