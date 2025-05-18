@@ -73,7 +73,7 @@ export default function HomePage() {
               <li>Drag and Drop tasks to reorder them</li>
               <li>Save tasks to local storage</li>
               <li>Auto-save tasks every 1 second</li>
-              <li>Persist the user's name</li>
+              <li>Persist the user&apos;s name</li>
               <li>Toggle between light and dark mode</li>
             </ul>
           </div>
